@@ -155,48 +155,17 @@
             padding: 5px 10px;
             font-size: 0.85rem;
         }
-
-        /* Logo Mata Ikonik CSS */
-        .eyeball-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: var(--moon-yellow);
-            border: 3px solid var(--moon-black);
-            padding: 4px 12px;
-            border-radius: 50px;
-        }
-        .eye {
-            width: 22px;
-            height: 22px;
-            background: var(--moon-white);
-            border: 3px solid var(--moon-black);
-            border-radius: 50%;
-            position: relative;
-            display: inline-block;
-        }
-        .eye::after {
-            content: '';
-            width: 9px;
-            height: 9px;
-            background: var(--moon-black);
-            border-radius: 50%;
-            position: absolute;
-            top: 3px;
-            right: 2px;
-        }
     </style>
 </head>
 <body>
 
 <div class="container py-4">
 
-    <!-- Top Bar User & Logout -->
+    <!-- Top Bar User & Logout dengan Logo PNG -->
     <div class="moon-box p-3 mb-4 d-flex flex-wrap justify-content-between align-items-center gap-2">
-        <div class="d-flex align-items-center gap-2">
-            <div class="eyeball-badge">
-                <span class="eye"></span>
-                <span class="eye"></span>
+        <div class="d-flex align-items-center gap-3">
+            <div>
+                <img src="{{ asset('image/Mooneyes.png') }}" alt="Mooneyes Logo" style="height: 42px; width: auto; border: 2px solid var(--moon-black); background: var(--moon-yellow); padding: 3px; border-radius: 6px;">
             </div>
             <div>
                 <span class="fw-bold">MECHANIC ON DUTY:</span>

@@ -51,40 +51,6 @@
             text-align: center;
         }
 
-        /* Logo Bola Mata Ikonik */
-        .eyeball-logo {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: var(--moon-yellow);
-            border: 3px solid var(--moon-white);
-            padding: 8px 18px;
-            border-radius: 50px;
-            margin-bottom: 12px;
-            box-shadow: 0 4px 0 rgba(255, 255, 255, 0.2);
-        }
-
-        .eye {
-            width: 30px;
-            height: 30px;
-            background: var(--moon-white);
-            border: 3.5px solid var(--moon-black);
-            border-radius: 50%;
-            position: relative;
-            display: inline-block;
-        }
-
-        .eye::after {
-            content: '';
-            width: 12px;
-            height: 12px;
-            background: var(--moon-black);
-            border-radius: 50%;
-            position: absolute;
-            top: 4px;
-            right: 3px;
-        }
-
         .moon-input {
             border: 3px solid var(--moon-black) !important;
             border-radius: 8px;
@@ -132,11 +98,10 @@
 <body class="p-3">
 
 <div class="moon-login-card">
-    <!-- Header Hitam & Logo Mata -->
+    <!-- Header Hitam & Logo PNG -->
     <div class="moon-login-header">
-        <div class="eyeball-logo">
-            <span class="eye"></span>
-            <span class="eye"></span>
+        <div class="mb-3">
+            <img src="{{ asset('image/Mooneyes.png') }}" alt="Mooneyes Services Logo" style="max-height: 65px; width: auto; background: var(--moon-yellow); padding: 4px; border: 3px solid var(--moon-white); border-radius: 8px;">
         </div>
         <h1 class="h2 mb-1" style="letter-spacing: 2px;">MOONEYES SERVICES</h1>
         <span class="badge bg-warning text-dark border border-light brand-font px-2 py-1">
