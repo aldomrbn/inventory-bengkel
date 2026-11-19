@@ -10,6 +10,8 @@ class Transaction extends Model
     use HasFactory;
 
     protected $fillable = [
+        'workshop_id',
+        'user_id',
         'type', // IN atau OUT
         'note',
     ];
@@ -18,5 +20,17 @@ class Transaction extends Model
     public function details()
     {
         return $this->hasMany(TransactionDetail::class);
+    }
+
+    // Relasi ke user/admin yang melakukan transaksi
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    // Relasi ke bengkel pemilik transaksi
+    public function workshop()
+    {
+        return $this->belongsTo(Workshop::class);
     }
 }

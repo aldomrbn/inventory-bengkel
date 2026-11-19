@@ -155,7 +155,10 @@
 <body>
 
 @php
-    $openHistoryTab = request()->has('type') || request()->has('page');
+    $openHistoryTab = request('tab') === 'history'
+        || request()->filled('type')
+        || request()->filled('tanggal')
+        || request()->has('page');
 @endphp
 
 <div class="container py-4">
@@ -167,7 +170,7 @@
         <div class="p-4">
             <span class="badge bg-warning text-dark badge-moon mb-2">SPEED SHOP & GARAGE STOCK FLOW</span>
             <h1 class="display-6 mb-0" style="color: var(--moon-yellow); text-shadow: 3px 3px 0px #000;">
-                ⚡ TRANSAKSI ARUS STOK BENGKEL
+                ⚡ TRANSAKSI & RIWAYAT STOK BENGKEL
             </h1>
         </div>
         <div class="checker-strip"></div>
@@ -193,7 +196,7 @@
                 ⚡ FORM ARUS STOK
             </button>
             <button type="button" id="tab-btn-history" class="btn {{ $openHistoryTab ? 'btn-moon-black' : 'btn-moon-yellow' }}">
-                🧾 RIWAYAT ARUS STOK
+                🧾 RIWAYAT & REKAP HARIAN
             </button>
         </div>
     </div>
@@ -259,17 +262,59 @@
         </div>
     </div>
 
-    <!-- PANEL 2: RIWAYAT ARUS STOK -->
+    <!-- PANEL 2: RIWAYAT ARUS STOK & REKAP HARIAN -->
     <div id="panel-history" @class(['d-none' => !$openHistoryTab])>
         @if(isset($transactions))
-            <!-- Filter Jenis Arus Stok -->
-            <div class="moon-box p-3 mb-4 d-flex flex-wrap justify-content-between align-items-center gap-2">
-                <span class="brand-font fs-5">FILTER RIWAYAT ARUS BARANG:</span>
-                <div class="d-flex flex-wrap gap-2">
-                    <a href="{{ route('spareparts.transaksi.form') }}" class="btn btn-sm @if(empty($type)) btn-moon-black @else btn-moon-yellow @endif">SEMUA</a>
-                    <a href="{{ route('spareparts.transaksi.form', ['type' => 'IN']) }}" class="btn btn-sm @if(($type ?? '') == 'IN') btn-moon-black @else btn-moon-yellow @endif">⬇ BARANG MASUK</a>
-                    <a href="{{ route('spareparts.transaksi.form', ['type' => 'OUT']) }}" class="btn btn-sm @if(($type ?? '') == 'OUT') btn-moon-black @else btn-moon-yellow @endif">⬆ BARANG KELUAR</a>
+            <!-- Ringkasan Item & PCS -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="moon-box p-3 h-100">
+                        <div class="small fw-bold text-muted">
+                            TOTAL ARUS {{ !empty($tanggal) ? '(' . \Carbon\Carbon::parse($tanggal)->format('d M Y') . ')' : '(SEMUA TANGGAL)' }}
+                        </div>
+                        <div class="fs-3 brand-font mt-1">{{ $jumlahItemLog ?? 0 }} ITEM {{ $totalSemuaPcs ?? 0 }} PCS</div>
+                        <div class="small fw-bold">
+                            Masuk: {{ $jumlahItemMasuk ?? 0 }} item {{ $totalMasukPcs ?? 0 }} pcs • Keluar: {{ $jumlahItemKeluar ?? 0 }} item {{ $totalKeluarPcs ?? 0 }} pcs
+                        </div>
+                    </div>
                 </div>
+                <div class="col-md-4">
+                    <div class="moon-box p-3 h-100" style="background-color: #E8F8EE;">
+                        <div class="small fw-bold text-success">BARANG MASUK (IN)</div>
+                        <div class="fs-3 brand-font text-success mt-1">{{ $jumlahItemMasuk ?? 0 }} ITEM {{ $totalMasukPcs ?? 0 }} PCS</div>
+                        <div class="small fw-bold">Total unit restock masuk</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="moon-box p-3 h-100" style="background-color: #FFF4E5;">
+                        <div class="small fw-bold text-danger">BARANG KELUAR (OUT)</div>
+                        <div class="fs-3 brand-font text-danger mt-1">{{ $jumlahItemKeluar ?? 0 }} ITEM {{ $totalKeluarPcs ?? 0 }} PCS</div>
+                        <div class="small fw-bold">Total unit keluar / terpakai</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Tanggal & Jenis Arus Stok -->
+            <div class="moon-box p-3 mb-4">
+                <form action="{{ route('spareparts.transaksi.form') }}" method="GET" class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <input type="hidden" name="tab" value="history">
+                    <span class="brand-font fs-5">FILTER RIWAYAT & TANGGAL:</span>
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <input type="date" name="tanggal" value="{{ $tanggal ?? '' }}" class="form-control moon-input" style="width: auto;">
+                        <select name="type" class="form-select moon-input" style="width: auto;">
+                            <option value="">SEMUA JENIS</option>
+                            <option value="IN" {{ ($type ?? '') === 'IN' ? 'selected' : '' }}>⬇ BARANG MASUK (IN)</option>
+                            <option value="OUT" {{ ($type ?? '') === 'OUT' ? 'selected' : '' }}>⬆ BARANG KELUAR (OUT)</option>
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-moon-black px-3 py-2">FILTER</button>
+                        <a href="{{ route('spareparts.transaksi.form', ['tab' => 'history', 'tanggal' => now()->toDateString()]) }}" class="btn btn-sm btn-moon-yellow px-3 py-2">
+                            HARI INI
+                        </a>
+                        <a href="{{ route('spareparts.transaksi.form', ['tab' => 'history']) }}" class="btn btn-sm btn-moon-yellow px-3 py-2">
+                            SEMUA
+                        </a>
+                    </div>
+                </form>
             </div>
 
             <!-- Tabel Riwayat Arus Stok -->
@@ -283,14 +328,20 @@
                         <thead>
                             <tr>
                                 <th>Waktu</th>
-                                <th>Rincian Barang, Qty & Harga</th>
+                                <th>Rincian Barang & Qty</th>
                                 <th>Jenis Arus</th>
-                                <th>Nilai Stok</th>
+                                <th>Ringkasan</th>
+                                <th>Admin</th>
                                 <th>Catatan</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($transactions as $trx)
+                            @php
+                                $namaAdmin = $trx->user->name
+                                    ?? ($usersById[$trx->user_id] ?? null)
+                                    ?? (Auth::user()->name ?? 'Admin');
+                            @endphp
                             <tr>
                                 <td class="fw-bold" style="white-space: nowrap;">{{ $trx->created_at->format('d M Y, H:i') }}</td>
                                 <td>
@@ -299,8 +350,7 @@
                                             <li class="mb-1">
                                                 <span class="badge bg-dark text-warning">{{ $detail->sparepart->code ?? '-' }}</span>
                                                 <strong>{{ $detail->sparepart->name ?? 'Barang Dihapus' }}</strong>
-                                                <span class="text-muted">({{ $detail->qty }} pcs × Rp {{ number_format($detail->price, 0, ',', '.') }})</span>
-                                                = <span class="fw-bold">Rp {{ number_format($detail->qty * $detail->price, 0, ',', '.') }}</span>
+                                                <span class="fw-bold">({{ $detail->qty }} pcs)</span>
                                             </li>
                                         @endforeach
                                     </ul>
@@ -314,17 +364,19 @@
                                 </td>
                                 <td>
                                     @php
-                                        $grandTotal = $trx->details->sum(fn($item) => $item->qty * $item->price);
+                                        $jumlahItemTrx = $trx->details->count();
+                                        $totalQtyTrx = $trx->details->sum('qty');
                                     @endphp
-                                    <span class="fs-6 fw-bold px-2 py-1 rounded" style="background-color: #E8F5E9; border: 2px solid var(--moon-black); color: #1B5E20;">
-                                        Rp {{ number_format($grandTotal, 0, ',', '.') }}
+                                    <span class="fs-6 fw-bold px-2 py-1 rounded" style="background-color: #FFF9D6; border: 2px solid var(--moon-black);">
+                                        {{ $jumlahItemTrx }} ITEM {{ $totalQtyTrx }} PCS
                                     </span>
                                 </td>
+                                <td class="fw-bold">{{ $namaAdmin }}</td>
                                 <td class="fst-italic">{{ $trx->note ?: '-' }}</td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="5" class="text-center fw-bold py-4 text-muted">BELUM ADA RIWAYAT ARUS STOK.</td>
+                                <td colspan="6" class="text-center fw-bold py-4 text-muted">BELUM ADA RIWAYAT ARUS STOK.</td>
                             </tr>
                             @endforelse
                         </tbody>

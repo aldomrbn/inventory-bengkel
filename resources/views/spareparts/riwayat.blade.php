@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RIWAYAT STOK - MOONEYES SERVICES</title>
+    <title>RIWAYAT HARIAN - MOONEYES SERVICES</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <style>
@@ -21,7 +21,7 @@
             font-family: 'Space Grotesk', sans-serif;
             color: var(--moon-black);
         }
-        h1, h2, h3, .brand-font {
+        h1, h2, h3, label, .brand-font {
             font-family: 'Oswald', sans-serif;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -39,203 +39,145 @@
             border-bottom: 4px solid var(--moon-black);
             padding: 12px 20px;
             font-family: 'Oswald', sans-serif;
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             letter-spacing: 1.5px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 8px;
         }
-        .checker-strip {
-            height: 10px;
-            background-image: repeating-linear-gradient(
-                90deg,
-                var(--moon-black) 0px,
-                var(--moon-black) 16px,
-                var(--moon-yellow) 16px,
-                var(--moon-yellow) 32px
-            );
-            border-top: 3px solid var(--moon-black);
-        }
-        .btn-moon-black {
-            background-color: var(--moon-black);
-            color: var(--moon-yellow);
-            border: 3px solid var(--moon-black);
-            font-family: 'Oswald', sans-serif;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            box-shadow: 4px 4px 0px rgba(0,0,0,0.3);
-            transition: all 0.15s ease;
-        }
-        .btn-moon-black:hover {
-            background-color: var(--moon-white);
-            color: var(--moon-black);
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0px var(--moon-black);
-        }
-        .btn-moon-yellow {
-            background-color: var(--moon-yellow);
-            color: var(--moon-black);
-            border: 3px solid var(--moon-black);
-            font-family: 'Oswald', sans-serif;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            box-shadow: 4px 4px 0px var(--moon-black);
-            transition: all 0.15s ease;
-        }
-        .btn-moon-yellow:hover {
-            background-color: var(--moon-black);
-            color: var(--moon-yellow);
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0px var(--moon-black);
-        }
-        .btn-moon-danger {
-            background-color: var(--moon-red);
-            color: var(--moon-white);
-            border: 2px solid var(--moon-black);
-            font-family: 'Oswald', sans-serif;
-            text-transform: uppercase;
-            transition: all 0.15s ease;
-        }
-        .btn-moon-danger:hover {
-            background-color: var(--moon-black);
-            color: var(--moon-red);
-        }
-        .table-moon { border-color: var(--moon-black); margin-bottom: 0; }
-        .table-moon thead th {
-            background-color: var(--moon-yellow);
-            color: var(--moon-black);
-            font-family: 'Oswald', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 3px solid var(--moon-black);
-            border-color: var(--moon-black);
-        }
-        .table-moon tbody td { border-color: var(--moon-black); vertical-align: middle; }
-        .table-moon tbody tr:hover { background-color: #FFF9D6; }
-        .badge-moon {
-            border: 2px solid var(--moon-black);
-            font-family: 'Oswald', sans-serif;
-            letter-spacing: 0.5px;
-            padding: 5px 10px;
-            font-size: 0.85rem;
+        .moon-input {
+            border: 3px solid var(--moon-black) !important;
+            border-radius: 8px;
+            font-weight: 700;
+            background-color: var(--moon-gray);
         }
     </style>
 </head>
 <body>
-
-<div class="container py-4">
+<div class="container py-4" style="max-width: 1150px;">
 
     @include('layouts.navbar')
 
-    <!-- Header Judul -->
-    <div class="moon-box mb-4" style="background-color: var(--moon-black); color: var(--moon-white);">
-        <div class="p-4">
-            <span class="badge bg-warning text-dark badge-moon mb-2">SPEED SHOP & GARAGE LOGBOOK</span>
-            <h1 class="display-6 mb-0" style="color: var(--moon-yellow); text-shadow: 3px 3px 0px #000;">
-                🧾 RIWAYAT ARUS STOK BENGKEL
-            </h1>
-        </div>
-        <div class="checker-strip"></div>
-    </div>
-
-    <!-- Alert Notifications -->
-    @if(session('success'))
-        <div class="moon-box p-3 mb-4 fw-bold" style="background-color: #D4EDDA; border-color: var(--moon-black);">
-            ✅ {{ session('success') }}
-        </div>
-    @endif
-    @if(session('error'))
-        <div class="moon-box p-3 mb-4 fw-bold text-white" style="background-color: var(--moon-red); border-color: var(--moon-black);">
-            ⚠️ {{ session('error') }}
-        </div>
-    @endif
-
-    <!-- Filter Jenis Arus Stok -->
-    <div class="moon-box p-3 mb-4 d-flex flex-wrap justify-content-between align-items-center gap-2">
-        <span class="brand-font fs-5">FILTER ARUS BARANG:</span>
-        <div class="d-flex flex-wrap gap-2">
-            <a href="{{ route('spareparts.riwayat') }}" class="btn btn-sm {{ !$type ? 'btn-moon-black' : 'btn-moon-yellow' }}">SEMUA</a>
-            <a href="{{ route('spareparts.riwayat', ['type' => 'IN']) }}" class="btn btn-sm {{ $type == 'IN' ? 'btn-moon-black' : 'btn-moon-yellow' }}">⬇ BARANG MASUK</a>
-            <a href="{{ route('spareparts.riwayat', ['type' => 'OUT']) }}" class="btn btn-sm {{ $type == 'OUT' ? 'btn-moon-black' : 'btn-moon-yellow' }}">⬆ BARANG KELUAR</a>
-        </div>
-    </div>
-
-    @php
-        $pageTotal = $transactions->getCollection()->sum(function ($trx) {
-            return $trx->details->sum(fn($item) => $item->qty * $item->price);
-        });
-    @endphp
-
-    <!-- Tabel Riwayat Arus Stok -->
-    <div class="moon-box mb-4">
-        <div class="moon-header-bar">
-            <span>📋 LOG KELUAR / MASUK SUKU CADANG</span>
-            <div class="d-flex flex-wrap align-items-center gap-2">
-                <span class="badge bg-success text-white badge-moon">
-                    NILAI HALAMAN INI: Rp {{ number_format($pageTotal, 0, ',', '.') }}
+    {{-- Header & Filter Tanggal --}}
+    <div class="moon-box mb-4 p-4" style="background-color: var(--moon-black); color: var(--moon-white);">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div>
+                <span class="badge mb-2 px-3 py-1 fw-bold" style="background-color: var(--moon-yellow); color: var(--moon-black);">
+                    LOG OPERASIONAL HARIAN
                 </span>
-                <span class="badge bg-light text-dark badge-moon">TOTAL DATA: {{ $transactions->total() }}</span>
+                <h1 class="m-0" style="color: var(--moon-yellow);">📋 RIWAYAT TRANSAKSI HARIAN</h1>
+            </div>
+
+            <form action="{{ route('spareparts.riwayat') }}" method="GET" class="d-flex flex-wrap align-items-center gap-2">
+                <input type="date" name="tanggal" value="{{ $tanggal }}" class="form-control moon-input" style="width: auto;">
+                <button type="submit" class="btn fw-bold px-3 py-2"
+                        style="background-color: var(--moon-yellow); color: var(--moon-black); border: 2px solid #FFFFFF; font-family: 'Oswald', sans-serif;">
+                    🔍 TAMPILKAN
+                </button>
+                <a href="{{ route('spareparts.riwayat') }}" class="btn btn-outline-light fw-bold px-3 py-2"
+                   style="font-family: 'Oswald', sans-serif;">
+                    HARI INI
+                </a>
+            </form>
+        </div>
+    </div>
+
+    {{-- 3 Kartu Ringkasan Harian --}}
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="moon-box p-3 h-100">
+                <div class="small fw-bold text-muted">TOTAL TRANSAKSI ({{ \Carbon\Carbon::parse($tanggal)->format('d M Y') }})</div>
+                <div class="fs-2 brand-font mt-1">{{ $transactions->count() }} TRANSAKSI</div>
+                <div class="small fw-bold text-dark">
+                    {{ $jumlahItemLog }} item • Masuk: {{ $totalMasuk }} pcs • Keluar: {{ $totalKeluar }} pcs
+                </div>
             </div>
         </div>
+        <div class="col-md-4">
+            <div class="moon-box p-3 h-100" style="background-color: #E8F8EE;">
+                <div class="small fw-bold text-success">TOTAL PENJUALAN KELUAR (OUT)</div>
+                <div class="fs-2 brand-font text-success mt-1">Rp {{ number_format($omzetHarian, 0, ',', '.') }}</div>
+                <div class="small fw-bold">Dari {{ $totalKeluar }} unit sparepart keluar</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="moon-box p-3 h-100" style="background-color: #FFF4E5;">
+                <div class="small fw-bold text-danger">TOTAL STOK MASUK (IN)</div>
+                <div class="fs-2 brand-font text-danger mt-1">Rp {{ number_format($modalMasuk, 0, ',', '.') }}</div>
+                <div class="small fw-bold">Dari {{ $totalMasuk }} unit sparepart masuk</div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Tabel Log Riwayat --}}
+    <div class="moon-box">
+        <div class="moon-header-bar d-flex justify-content-between align-items-center">
+            <span>🕒 RINCIAN KELUAR-MASUK PART ({{ \Carbon\Carbon::parse($tanggal)->format('d/m/Y') }})</span>
+            <span class="badge bg-warning text-dark">{{ $jumlahItemLog }} ITEM</span>
+        </div>
+
         <div class="table-responsive">
-            <table class="table table-bordered table-moon">
-                <thead>
+            <table class="table table-bordered align-middle mb-0" style="border-color: #111111;">
+                <thead style="background-color: var(--moon-yellow); font-family: 'Oswald', sans-serif;">
                     <tr>
-                        <th>Waktu</th>
-                        <th>Rincian Barang, Qty & Harga</th>
-                        <th>Jenis Arus</th>
-                        <th>Nilai Stok</th>
-                        <th>Catatan</th>
+                        <th>JAM</th>
+                        <th>KODE PART</th>
+                        <th>NAMA SPAREPART</th>
+                        <th>JENIS</th>
+                        <th>QTY</th>
+                        <th>HARGA SATUAN</th>
+                        <th>SUBTOTAL</th>
+                        <th>CATATAN</th>
+                        <th>ADMIN</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @forelse($transactions as $trx)
-                    <tr>
-                        <td class="fw-bold" style="white-space: nowrap;">{{ $trx->created_at->format('d M Y, H:i') }}</td>
-                        <td>
-                            <ul class="list-unstyled mb-0">
-                                @foreach($trx->details as $detail)
-                                    <li class="mb-1">
-                                        <span class="badge bg-dark text-warning">{{ $detail->sparepart->code ?? '-' }}</span>
-                                        <strong>{{ $detail->sparepart->name ?? 'Barang Dihapus' }}</strong>
-                                        <span class="text-muted">({{ $detail->qty }} pcs × Rp {{ number_format($detail->price, 0, ',', '.') }})</span>
-                                        = <span class="fw-bold">Rp {{ number_format($detail->qty * $detail->price, 0, ',', '.') }}</span>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </td>
-                        <td>
-                            @if($trx->type == 'IN')
-                                <span class="badge badge-moon bg-primary text-white">⬇ BARANG MASUK</span>
-                            @else
-                                <span class="badge badge-moon text-dark" style="background-color: var(--moon-yellow);">⬆ BARANG KELUAR</span>
-                            @endif
-                        </td>
-                        <td>
+                <tbody class="fw-bold">
+                    @php $adaBaris = false; @endphp
+                    @foreach($transactions as $trx)
+                        @php
+                            $isMasuk = strtoupper((string) $trx->type) === 'IN';
+                            $adminName = $usersById[$trx->user_id] ?? 'Admin Bengkel';
+                        @endphp
+                        @foreach($trx->details as $detail)
                             @php
-                                $grandTotal = $trx->details->sum(fn($item) => $item->qty * $item->price);
+                                $adaBaris = true;
+                                $qty = (int) ($detail->qty ?? 0);
+                                $fallbackPrice = $isMasuk
+                                    ? ($detail->sparepart->buy_price ?? 0)
+                                    : ($detail->sparepart->sell_price ?? 0);
+                                $harga = (int) ($detail->price ?? $fallbackPrice);
                             @endphp
-                            <span class="fs-6 fw-bold px-2 py-1 rounded" style="background-color: #E8F5E9; border: 2px solid var(--moon-black); color: #1B5E20;">
-                                Rp {{ number_format($grandTotal, 0, ',', '.') }}
-                            </span>
-                        </td>
-                        <td class="fst-italic">{{ $trx->note ?: '-' }}</td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="5" class="text-center fw-bold py-4 text-muted">BELUM ADA RIWAYAT ARUS STOK.</td>
-                    </tr>
-                    @endforelse
+                            <tr>
+                                <td>{{ $trx->created_at->format('H:i') }} WIB</td>
+                                <td>
+                                    <span class="badge bg-dark text-warning px-2 py-1">
+                                        {{ $detail->sparepart->code ?? '-' }}
+                                    </span>
+                                </td>
+                                <td>{{ $detail->sparepart->name ?? 'Part Dihapus' }}</td>
+                                <td>
+                                    @if($isMasuk)
+                                        <span class="badge text-bg-primary border border-dark">📥 MASUK (IN)</span>
+                                    @else
+                                        <span class="badge text-bg-danger border border-dark">📤 KELUAR (OUT)</span>
+                                    @endif
+                                </td>
+                                <td>{{ $qty }} PCS</td>
+                                <td>Rp {{ number_format($harga, 0, ',', '.') }}</td>
+                                <td>Rp {{ number_format($qty * $harga, 0, ',', '.') }}</td>
+                                <td class="text-muted small">{{ $trx->note ?? '-' }}</td>
+                                <td>{{ $adminName }}</td>
+                            </tr>
+                        @endforeach
+                    @endforeach
+
+                    @unless($adaBaris)
+                        <tr>
+                            <td colspan="9" class="text-center py-4 text-muted">
+                                Belum ada transaksi keluar/masuk suku cadang pada tanggal ini.
+                            </td>
+                        </tr>
+                    @endunless
                 </tbody>
             </table>
         </div>
-    </div>
-
-    <!-- Pagination -->
-    <div class="d-flex justify-content-center">
-        {{ $transactions->links('pagination::bootstrap-5') }}
     </div>
 
 </div>
