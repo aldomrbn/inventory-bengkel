@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MOONEYES STYLE - Tambah Sparepart</title>
+    <title>TAMBAH SPAREPART - MOONEYES SERVICES</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <style>
@@ -52,6 +52,7 @@
             border: 3px solid var(--moon-black);
             font-family: 'Oswald', sans-serif;
             letter-spacing: 1px;
+            text-transform: uppercase;
             box-shadow: 4px 4px 0px rgba(0,0,0,0.3);
             transition: all 0.15s ease;
         }
@@ -60,6 +61,36 @@
             color: var(--moon-black);
             transform: translate(-2px, -2px);
             box-shadow: 6px 6px 0px var(--moon-black);
+        }
+
+        .btn-moon-yellow {
+            background-color: var(--moon-yellow);
+            color: var(--moon-black);
+            border: 3px solid var(--moon-black);
+            font-family: 'Oswald', sans-serif;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 4px 4px 0px var(--moon-black);
+            transition: all 0.15s ease;
+        }
+        .btn-moon-yellow:hover {
+            background-color: var(--moon-black);
+            color: var(--moon-yellow);
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px var(--moon-black);
+        }
+
+        .btn-moon-danger {
+            background-color: var(--moon-red);
+            color: var(--moon-white);
+            border: 2px solid var(--moon-black);
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            transition: all 0.15s ease;
+        }
+        .btn-moon-danger:hover {
+            background-color: var(--moon-black);
+            color: var(--moon-red);
         }
 
         .moon-input {
@@ -76,10 +107,12 @@
 </head>
 <body>
 
-<div class="container py-5" style="max-width: 700px;">
-    
+<div class="container py-4" style="max-width: 820px;">
+
+    @include('layouts.navbar')
+
     <div class="mb-3">
-        <a href="{{ route('spareparts.index') }}" class="btn btn-dark border-3 fw-bold brand-font" style="box-shadow: 3px 3px 0px var(--moon-black);">← KEMBALI KE GARASI</a>
+        <a href="{{ route('spareparts.index') }}" class="btn btn-dark border-3 fw-bold brand-font" style="box-shadow: 3px 3px 0px var(--moon-black);">← KEMBALI KE DAFTAR STOK</a>
     </div>
 
     <div class="moon-box">
@@ -104,7 +137,7 @@
                     <label class="form-label fw-bold">Kategori</label>
                     <select name="category_id" class="form-select moon-input" required>
                         <option value="">-- PILIH KATEGORI --</option>
-                        @foreach($categories as$cat)
+                        @foreach($categories as $cat)
                             <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                         @endforeach
                     </select>
@@ -113,22 +146,22 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold">Harga Beli (Rp)</label>
-                        <input type="number" name="buy_price" class="form-control moon-input" placeholder="0" required>
+                        <input type="number" name="buy_price" class="form-control moon-input" placeholder="0" min="0" required>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold">Harga Jual (Rp)</label>
-                        <input type="number" name="sell_price" class="form-control moon-input" placeholder="0" required>
+                        <input type="number" name="sell_price" class="form-control moon-input" placeholder="0" min="0" required>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold">Stok Awal (Pcs)</label>
-                        <input type="number" name="stock" class="form-control moon-input" placeholder="0" required>
+                        <input type="number" name="stock" class="form-control moon-input" placeholder="0" min="0" required>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold">Batas Stok Menipis (Min. Stok)</label>
-                        <input type="number" name="min_stock" class="form-control moon-input" value="5" required>
+                        <input type="number" name="min_stock" class="form-control moon-input" value="5" min="0" required>
                     </div>
                 </div>
 

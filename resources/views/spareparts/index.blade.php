@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MOONEYES SERVICES - Inventaris Bengkel Kustom</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Google Fonts untuk nuansa Hot Rod / Vintage Garage -->
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -18,7 +17,6 @@
 
         body {
             background-color: var(--moon-yellow);
-            /* Pola titik halus ala cetakan stiker vintage */
             background-image: radial-gradient(var(--moon-black) 1px, transparent 1px);
             background-size: 24px 24px;
             font-family: 'Space Grotesk', sans-serif;
@@ -31,7 +29,6 @@
             letter-spacing: 1px;
         }
 
-        /* Gaya Kartu & Kontainer Brutalist / Hot Rod Decal */
         .moon-box {
             background-color: var(--moon-white);
             border: 4px solid var(--moon-black);
@@ -51,9 +48,10 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
-        /* Strip Garis Balap */
         .checker-strip {
             height: 10px;
             background-image: repeating-linear-gradient(
@@ -66,7 +64,6 @@
             border-top: 3px solid var(--moon-black);
         }
 
-        /* Tombol Ikonik Mooneyes */
         .btn-moon-black {
             background-color: var(--moon-black);
             color: var(--moon-yellow);
@@ -107,13 +104,13 @@
             border: 2px solid var(--moon-black);
             font-family: 'Oswald', sans-serif;
             text-transform: uppercase;
+            transition: all 0.15s ease;
         }
         .btn-moon-danger:hover {
             background-color: var(--moon-black);
             color: var(--moon-red);
         }
 
-        /* Input Form */
         .moon-input {
             border: 3px solid var(--moon-black) !important;
             border-radius: 8px;
@@ -125,7 +122,6 @@
             box-shadow: 4px 4px 0px var(--moon-black) !important;
         }
 
-        /* Tabel Gaya Bengkel Kustom */
         .table-moon {
             border-color: var(--moon-black);
             margin-bottom: 0;
@@ -147,7 +143,6 @@
             background-color: #FFF9D6;
         }
 
-        /* Badge Gaya Stiker */
         .badge-moon {
             border: 2px solid var(--moon-black);
             font-family: 'Oswald', sans-serif;
@@ -159,39 +154,26 @@
 </head>
 <body>
 
+@php
+    $minStock = 5;
+@endphp
+
 <div class="container py-4">
 
-    <!-- Top Bar User & Logout dengan Logo PNG -->
-    <div class="moon-box p-3 mb-4 d-flex flex-wrap justify-content-between align-items-center gap-2">
-        <div class="d-flex align-items-center gap-3">
-            <div>
-                <img src="{{ asset('image/Mooneyes.png') }}" alt="Mooneyes Logo" style="height: 42px; width: auto; border: 2px solid var(--moon-black); background: var(--moon-yellow); padding: 3px; border-radius: 6px;">
-            </div>
-            <div>
-                <span class="fw-bold">MECHANIC ON DUTY:</span>
-                <span class="badge bg-dark text-warning fs-6 ms-1">{{ Auth::user()->name }}</span>
-                <small class="text-muted d-none d-md-inline ms-2">({{ Auth::user()->email }})</small>
-            </div>
-        </div>
-        <form action="{{ route('logout') }}" method="POST" class="mb-0">
-            @csrf
-            <button type="submit" class="btn btn-moon-danger btn-sm px-3">LOGOUT ✖</button>
-        </form>
-    </div>
+    @include('layouts.navbar')
 
-    <!-- Main Title & Action Buttons -->
+    <!-- Header Judul & Tombol Tambah Sparepart -->
     <div class="moon-box mb-4" style="background-color: var(--moon-black); color: var(--moon-white);">
         <div class="p-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
             <div>
                 <span class="badge bg-warning text-dark badge-moon mb-2">SPEED SHOP & GARAGE INVENTORY</span>
                 <h1 class="display-6 mb-0" style="color: var(--moon-yellow); text-shadow: 3px 3px 0px #000;">
-                    🏁 MOONEYES SERVICES — INVENTARIS BENGKEL
+                    🏁 DAFTAR STOK SUKU CADANG BENGKEL
                 </h1>
             </div>
-            <div class="d-flex gap-2">
-                <a href="{{ route('spareparts.create') }}" class="btn btn-moon-yellow btn-lg px-4">+ TAMBAH SPAREPART</a>
-                <a href="{{ route('spareparts.transaksi.form') }}" class="btn btn-light border-3 border-dark fw-bold btn-lg px-4 brand-font" style="box-shadow: 4px 4px 0px var(--moon-yellow);">
-                    ⚡ CATAT TRANSAKSI
+            <div>
+                <a href="{{ route('spareparts.create') }}" class="btn btn-moon-yellow btn-lg px-4">
+                    + TAMBAH SPAREPART
                 </a>
             </div>
         </div>
@@ -226,9 +208,9 @@
     </div>
 
     <!-- Tabel Stok -->
-    <div class="moon-box mb-5">
+    <div class="moon-box mb-4">
         <div class="moon-header-bar">
-            <span>⚙️ DAFTAR STOK SUKU CADANG</span>
+            <span>⚙️ STOK TERSEDIA DI RAK</span>
             <span class="badge bg-warning text-dark badge-moon">TOTAL ITEM: {{ $spareparts->count() }}</span>
         </div>
         <div class="table-responsive">
@@ -246,17 +228,24 @@
                 </thead>
                 <tbody>
                     @forelse($spareparts as $item)
-                    <tr>
+                    <tr @class(['table-danger' => $item->stock <= 0])>
                         <td><span class="badge bg-dark text-warning fs-6">{{ $item->code }}</span></td>
                         <td class="fw-bold fs-6">{{ $item->name }}</td>
                         <td><span class="badge bg-light text-dark border border-dark">{{ $item->category->name ?? '-' }}</span></td>
                         <td>Rp {{ number_format($item->buy_price, 0, ',', '.') }}</td>
                         <td class="fw-bold">Rp {{ number_format($item->sell_price, 0, ',', '.') }}</td>
-                        <td><span class="fs-5 fw-bold">{{ $item->stock }}</span> <small class="text-muted fw-bold">PCS</small></td>
                         <td>
-                            @if($item->stock <= $item->min_stock)
-                                <span class="badge badge-moon text-white" style="background-color: var(--moon-red);">
-                                    ⚠️ STOK MENIPIS (MIN: {{ $item->min_stock }})
+                            <span @class(['fs-5 fw-bold', 'text-danger' => $item->stock <= 0])>{{ $item->stock }}</span>
+                            <small class="text-muted fw-bold">PCS</small>
+                        </td>
+                        <td>
+                            @if($item->stock <= 0)
+                                <span class="badge badge-moon bg-danger text-white">
+                                    🚫 STOK HABIS
+                                </span>
+                            @elseif($item->stock <= $minStock)
+                                <span class="badge badge-moon bg-warning text-dark">
+                                    ⚠️ STOK MENIPIS (MIN: {{ $minStock }})
                                 </span>
                             @else
                                 <span class="badge badge-moon bg-success text-white">
@@ -268,68 +257,6 @@
                     @empty
                     <tr>
                         <td colspan="7" class="text-center fw-bold py-4 text-muted">TIDAK ADA DATA SPAREPART YANG DITEMUKAN DI RAK.</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Tabel Riwayat Transaksi -->
-    <div class="moon-box">
-        <div class="moon-header-bar">
-            <span>🧾 10 RIWAYAT TRANSAKSI TERAKHIR</span>
-            <span class="badge bg-light text-dark badge-moon">LOG AKTIVITAS</span>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-bordered table-moon">
-                <thead>
-                    <tr>
-                        <th>Waktu</th>
-                        <th>Rincian Barang, Qty & Harga</th>
-                        <th>Jenis</th>
-                        <th>Total Biaya / Pendapatan</th>
-                        <th>Catatan</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($transactions as $trx)
-                    <tr>
-                        <td class="fw-bold" style="white-space: nowrap;">{{ $trx->created_at->format('d M Y, H:i') }}</td>
-                        <td>
-                            <ul class="list-unstyled mb-0">
-                                @foreach($trx->details as $detail)
-                                    <li class="mb-1">
-                                        <span class="badge bg-dark text-warning">{{ $detail->sparepart->code ?? '-' }}</span>
-                                        <strong>{{ $detail->sparepart->name ?? 'Barang Dihapus' }}</strong> 
-                                        <span class="text-muted">({{ $detail->qty }} pcs × Rp {{ number_format($detail->price, 0, ',', '.') }})</span>
-                                        = <span class="fw-bold">Rp {{ number_format($detail->qty * $detail->price, 0, ',', '.') }}</span>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </td>
-                        <td>
-                            @if($trx->type == 'IN')
-                                <span class="badge badge-moon bg-primary text-white">⬇ MASUK (RESTOCK)</span>
-                            @else
-                                <span class="badge badge-moon text-dark" style="background-color: var(--moon-yellow);">⬆ KELUAR (JUAL)</span>
-                            @endif
-                        </td>
-                        <td>
-                            @php
-                                $grandTotal = $trx->details->sum(function($item) {
-                                    return $item->qty * $item->price;
-                                });
-                            @endphp
-                            <span class="fs-6 fw-bold px-2 py-1 rounded" style="background-color: #E8F5E9; border: 2px solid var(--moon-black); color: #1B5E20;">
-                                Rp {{ number_format($grandTotal, 0, ',', '.') }}
-                            </span>
-                        </td>
-                        <td class="fst-italic">{{ $trx->note ?: '-' }}</td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="5" class="text-center fw-bold py-4 text-muted">BELUM ADA RIWAYAT TRANSAKSI.</td>
                     </tr>
                     @endforelse
                 </tbody>

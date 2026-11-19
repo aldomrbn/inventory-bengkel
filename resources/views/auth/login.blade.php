@@ -101,7 +101,7 @@
     <!-- Header Hitam & Logo PNG -->
     <div class="moon-login-header">
         <div class="mb-3">
-            <img src="{{ asset('image/Mooneyes.png') }}" alt="Mooneyes Services Logo" style="max-height: 65px; width: auto; background: var(--moon-yellow); padding: 4px; border: 3px solid var(--moon-white); border-radius: 8px;">
+            <img src="{{ asset('image/mooneyes.png') }}" alt="Mooneyes Services Logo" style="max-height: 65px; width: auto; background: var(--moon-yellow); padding: 4px; border: 3px solid var(--moon-white); border-radius: 8px;">
         </div>
         <h1 class="h2 mb-1" style="letter-spacing: 2px;">MOONEYES SERVICES</h1>
         <span class="badge bg-warning text-dark border border-light brand-font px-2 py-1">

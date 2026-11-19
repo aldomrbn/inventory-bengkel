@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class SparepartController extends Controller
 {
-    // Menampilkan halaman utama (stok & riwayat transaksi dengan fitur pencarian)
+    // Menampilkan halaman utama (fokus daftar stok & fitur pencarian)
     public function index(Request $request)
     {
         $search = $request->input('search');
@@ -25,10 +25,7 @@ class SparepartController extends Controller
             ->latest()
             ->get();
 
-        // Ambil 10 riwayat transaksi terakhir beserta detail barangnya
-        $transactions = Transaction::with('details.sparepart')->latest()->take(10)->get();
-        
-        return view('spareparts.index', compact('spareparts', 'transactions', 'search'));
+        return view('spareparts.index', compact('spareparts', 'search'));
     }
 
     // Form tambah barang
@@ -45,11 +42,21 @@ class SparepartController extends Controller
         return redirect()->route('spareparts.index')->with('success', 'Barang berhasil ditambahkan!');
     }
 
-    // Form transaksi masuk/keluar
-    public function transactionForm()
+    // Form transaksi masuk/keluar + riwayat arus stok di halaman yang sama
+    public function transactionForm(Request $request)
     {
         $spareparts = Sparepart::all();
-        return view('spareparts.transaksi', compact('spareparts'));
+        $type = $request->input('type');
+
+        $transactions = Transaction::with('details.sparepart')
+            ->when($type, function ($query, $type) {
+                return $query->where('type', $type);
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('spareparts.transaksi', compact('spareparts', 'transactions', 'type'));
     }
 
     // Proses simpan transaksi multi-item & rincian harga serta update stok otomatis
@@ -98,7 +105,7 @@ class SparepartController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('spareparts.index')->with('success', 'Transaksi multi-item & rincian harga berhasil disimpan!');
+            return redirect()->route('spareparts.transaksi.form')->with('success', 'Transaksi arus stok berhasil disimpan!');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());

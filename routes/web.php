@@ -16,4 +16,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/tambah', [SparepartController::class, 'store'])->name('spareparts.store');
     Route::get('/transaksi', [SparepartController::class, 'transactionForm'])->name('spareparts.transaksi.form');
     Route::post('/transaksi', [SparepartController::class, 'storeTransaction'])->name('spareparts.transaksi.store');
+    Route::get('/riwayat', [SparepartController::class, 'history'])->name('spareparts.riwayat');
 });
